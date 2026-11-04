@@ -1,0 +1,64 @@
+# Runs the whole stack: API + PostgreSQL + Elasticsearch.
+# Runs without a .env; any variable set there overrides the defaults below.
+name: solicitations
+
+services:
+  postgres:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_DB: solicitations
+      POSTGRES_USER: ${DB_USERNAME:-solicitations}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-admin}
+    ports:
+      - "127.0.0.1:${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      retries: 10
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:9.4.5
+    environment:
+      discovery.type: single-node
+      # Local only: no TLS or authentication
+      xpack.security.enabled: "false"
+      ES_JAVA_OPTS: -Xms512m -Xmx512m
+    ports:
+      - "127.0.0.1:${ELASTICSEARCH_PORT:-9200}:9200"
+    volumes:
+      - elasticsearch-data:/usr/share/elasticsearch/data
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fs http://localhost:9200/_cluster/health?wait_for_status=yellow || exit 1"]
+      interval: 10s
+      retries: 12
+
+  api:
+    build: .
+    environment:
+      # Calendar dates (preferredDate, search dateFrom/dateTo) are days in Brazil
+      TZ: America/Sao_Paulo
+      DB_URL: jdbc:postgresql://postgres:5432/solicitations
+      DB_USERNAME: ${DB_USERNAME:-solicitations}
+      DB_PASSWORD: ${DB_PASSWORD:-admin}
+      ELASTICSEARCH_URIS: http://elasticsearch:9200
+      JWT_SECRET: ${JWT_SECRET:-local-development-secret-change-me-0123456789}
+      JWT_EXPIRATION: ${JWT_EXPIRATION:-1h}
+      ADMIN_EMAIL: ${ADMIN_EMAIL:-admin@local.dev}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD:-admin12345}
+      VIACEP_URL: ${VIACEP_URL:-https://viacep.com.br/ws}
+      SERVER_PORT: ${SERVER_PORT:-8080}
+      SWAGGER_ENABLED: ${SWAGGER_ENABLED:-true}
+      LOG_LEVEL: ${LOG_LEVEL:-INFO}
+    ports:
+      - "127.0.0.1:${SERVER_PORT:-8080}:${SERVER_PORT:-8080}"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      elasticsearch:
+        condition: service_healthy
+
+volumes:
+  postgres-data:
+  elasticsearch-data:
