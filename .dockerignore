@@ -1,0 +1,6 @@
+# The build only needs the Maven wrapper, pom.xml and src/
+*
+!mvnw
+!.mvn/
+!pom.xml
+!src/
