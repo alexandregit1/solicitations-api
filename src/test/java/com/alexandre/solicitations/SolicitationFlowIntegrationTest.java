@@ -10,12 +10,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.alexandre.solicitations.audit.AuditLog;
-import com.alexandre.solicitations.audit.AuditLogRepository;
-import com.alexandre.solicitations.cep.CepAddress;
-import com.alexandre.solicitations.cep.ViaCepClient;
-import com.alexandre.solicitations.shared.BrazilianState;
-import com.alexandre.solicitations.solicitation.search.SolicitationDocument;
+import com.alexandre.solicitations.client.ViaCepClient;
+import com.alexandre.solicitations.dto.CepAddress;
+import com.alexandre.solicitations.model.AuditLog;
+import com.alexandre.solicitations.model.SolicitationDocument;
+import com.alexandre.solicitations.model.enums.BrazilianState;
+import com.alexandre.solicitations.repository.AuditLogRepository;
 import com.jayway.jsonpath.JsonPath;
 import java.time.LocalDate;
 import java.util.UUID;

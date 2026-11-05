@@ -113,7 +113,7 @@ Os métodos marcados com `@Audit` gravam em `audit_logs` a ação, quem fez e a 
 
 ## Decisões
 
-- **Pacotes por funcionalidade** (`auth`, `user`, `solicitation`, `cep`, `audit`), cada um com entidade, repositório, service, controller e `dto/`. A API recebe e devolve DTOs, nunca entidades.
+- **Pacotes por camada** (`controller`, `service`, `repository`, `model`, `dto`, `exception`, `config`, `security`, `client`, `aspect`). A API recebe e devolve DTOs, nunca entidades.
 - **Regras no lugar certo:** os campos de cada etapa são validados nos DTOs (Bean Validation). A ordem das etapas e o fluxo de status ficam na entidade `Solicitation`. Dono e cobertura de UF ficam nos services.
 - **O submit reaproveita as validações das etapas:** remonta cada DTO a partir dos dados salvos e valida de novo. Assim, nenhuma regra é duplicada.
 - **A cobertura de UF é lida do banco a cada requisição, não do token.** Uma mudança vale na hora.

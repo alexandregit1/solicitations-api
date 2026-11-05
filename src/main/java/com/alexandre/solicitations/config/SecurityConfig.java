@@ -1,8 +1,9 @@
 package com.alexandre.solicitations.config;
 
-import com.alexandre.solicitations.auth.AuthenticatedUser;
-import com.alexandre.solicitations.auth.TokenService;
-import com.alexandre.solicitations.user.Role;
+import com.alexandre.solicitations.model.enums.Role;
+import com.alexandre.solicitations.security.AuthenticatedUser;
+import com.alexandre.solicitations.security.SecurityErrorHandler;
+import com.alexandre.solicitations.security.TokenService;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.UUID;
